@@ -2,11 +2,13 @@ import { ObjectId } from "mongodb";
 import { setBlogsQueryParams, setPostsQueryParams } from "../../../helpers/helper";
 import { postsRepository } from "../../posts/posts-db-repository";
 import { postsQueryRepository } from "../../posts/posts-query-repository";
-import { PostDbType, PostInputModel } from "../../posts/types/posts-types";
+import { PostDbType, PostInputModel, PostViewModel } from "../../posts/types/posts-types";
 import { BlogsRepository } from "../blogs-db-repository";
 import { BlogsQueryRepository } from "../blogs-query-repository";
 import { BlogInputModel, BlogModel, BlogsViewCollectionModel, BlogViewModel } from "../types/blogs-types";
 import { injectable, inject } from "inversify";
+import { postLikeQueryRepository } from "../../likes/infrastructure/post-like-query-repository";
+import { PostLikeDbType } from "../../likes/types/likeTypes";
 
 @injectable()
 export class BlogsService {
@@ -47,10 +49,44 @@ export class BlogsService {
         return await this.blogsRepository.deleteBlog(id)
     }
 
-    async getPostByBlogId(query: { [key: string]: string | undefined }, blogId: string) {
+    async getPostByBlogId(query: { [key: string]: string | undefined }, blogId: string, userId: string) {
         const queryParams = setPostsQueryParams(query)
 
-        return await postsQueryRepository.findPosts(queryParams, blogId)
+        const posts = await postsQueryRepository.findPosts(queryParams, blogId)
+
+        await this.mapPosts(posts.items, userId)
+
+        return posts
+    }
+
+    async mapPosts(posts: PostViewModel[], userId: string | undefined) {
+        const postsLikes = await postLikeQueryRepository.getPostLikes()
+
+        return await Promise.all(posts.map(async post => {
+            const postLikes = postsLikes.filter(like => like.postId === post.id)
+
+            post.extendedLikesInfo = {
+                likesCount: postLikes.filter(like => like.status === "Like").length,
+                dislikesCount: postLikes.filter(like => like.status === "Dislike").length,
+                myStatus: this.getMyLikeStatus(userId, postsLikes, post.id),
+                newestLikes: await postLikeQueryRepository.getLastThreeLikes(post.id)
+            }
+
+            return post
+        }))
+    }
+
+    getMyLikeStatus(userId: string | undefined, postsLikes: PostLikeDbType[], postId: string) {
+        console.log('user', userId);
+        
+        if (userId) {
+            const myPostLike = postsLikes.find(like => like.postId === postId && like.authorId === userId)
+            if (myPostLike) {
+                return myPostLike.status
+            }
+        }
+
+        return "None"
     }
 
     async createPostByBlogId(blogId: string, post: PostInputModel) {

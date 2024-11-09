@@ -47,7 +47,8 @@ export class BlogController {
     }
 
     async getPostsByBlogId(req: Request, res: Response<{}>) {
-        const posts = await this.blogsService.getPostByBlogId(req.query as { [key: string]: string | undefined }, req.params.blogId)
+        const userId = req.user?.userId
+        const posts = await this.blogsService.getPostByBlogId(req.query as { [key: string]: string | undefined }, req.params.blogId, userId)
 
         res.send(posts)
     }
