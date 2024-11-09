@@ -26,7 +26,7 @@ export const postLikeQueryRepository = {
         return like ? like.status : "None"
     },
 
-    async getLastThreeLikes(postId: string): Promise<NewestLike[] | null> {
+    async getLastThreeLikes(postId: string): Promise<NewestLike[] | []> {
         const likes = await PostLikeModel.find({ postId, status: 'Like' })
             .sort({ createdAt: -1 })
             .limit(3)

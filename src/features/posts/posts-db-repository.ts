@@ -17,7 +17,16 @@ export const postsRepository = {
 
         await postsCollection.insertOne(newPost)
 
-        return this.mapPost(newPost)
+        const post = this.mapPost(newPost)
+
+        post.extendedLikesInfo = {
+            likesCount: 0,
+            dislikesCount: 0,
+            myStatus: "None",
+            newestLikes: []
+        }
+
+        return post
     },
 
     async updatePost(id: string, newData: PostInputModel): Promise<boolean> {
@@ -41,7 +50,7 @@ export const postsRepository = {
         return result.deletedCount === 1
     },
 
-    mapPost(post: PostDbType) {
+    mapPost(post: PostDbType): PostViewModel {
         return {
             id: post._id!.toString(),
             title: post.title,

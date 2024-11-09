@@ -22,7 +22,7 @@ export type ExtendedLikesInfo = {
   likesCount: number,
   dislikesCount: number,
   myStatus: string,
-  newestLikes: NewestLike[] | null
+  newestLikes: NewestLike[] | []
 }
 
 export type NewestLike = {
