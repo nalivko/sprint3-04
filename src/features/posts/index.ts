@@ -13,15 +13,19 @@ import { getPostCommentsController } from "../comments/controllers/getPostCommen
 import { postCommentValidators } from "../comments/middlewares/postCommentValidator";
 import { postIdValidator } from "../comments/middlewares/postIdValidator";
 import { userMiddleware } from "../../global-middlewares/userMiddleware";
+import { likePostController } from "../likes/controllers/likePostController";
+import { likeValidators } from "../likes/middleware/likeValidators";
 
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', ...queryValidator, getAllPostsController)
+postsRouter.get('/', ...queryValidator, userMiddleware, getAllPostsController)
 postsRouter.post('/', blogIdValidator, ...postValidators, createPostController)
-postsRouter.get('/:id', findPostController)
+postsRouter.get('/:id', userMiddleware, findPostController)
 postsRouter.put('/:id', blogIdValidator, ...postValidators, updatePostController)
 postsRouter.delete('/:id', basicMiddleweare, deletePostController)
 
 postsRouter.get('/:postId/comments', postIdValidator, userMiddleware, getPostCommentsController)
 postsRouter.post('/:postId/comments', authJWTMiddleware, postIdValidator, postCommentValidators, createCommentController)
+
+postsRouter.put('/:postId/like-status', authJWTMiddleware, postIdValidator, likeValidators, likePostController)

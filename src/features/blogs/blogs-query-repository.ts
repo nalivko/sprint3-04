@@ -1,7 +1,9 @@
+import { injectable } from "inversify"
 import { BlogDbType } from "../../db/blog-db-type"
 import { blogsQueryParamsType } from "../../helpers/helper"
 import { BlogModelClass } from "./domain/blog.entity"
 
+@injectable()
 export class BlogsQueryRepository {
     async findBlogs(queryParams: blogsQueryParamsType): Promise<any> {
 

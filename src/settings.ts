@@ -23,6 +23,7 @@ export const SETTINGS = {
         USER_COLLECTION_NAME: "users",
         COMMENT_COLLECTION_NAME: "comments",
         LIKE_COLLECTION_NAME: "likes",
+        POST_LIKE_COLLECTION_NAME: "postLikes",
         AUTH_SESSION_COLLECTION_NAME: "authSessions",
         API_REQUESTS_COLLECTION_NAME: "apiRequests",
     },

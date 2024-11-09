@@ -3,7 +3,9 @@ import { BlogInputModel, BlogViewModel } from "./types/blogs-types"
 import { blogsCollection } from "../../db/mongodb"
 import { ObjectId } from "mongodb"
 import { BlogModelClass } from "./domain/blog.entity"
+import { injectable } from "inversify"
 
+@injectable()
 export class BlogsRepository {
     async getBlogById(id: string): Promise<BlogViewModel | null> {
         let blog = await BlogModelClass.findOne({ _id: id })

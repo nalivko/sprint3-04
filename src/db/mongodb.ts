@@ -8,6 +8,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import { AuthSessionDbType } from "./auth-session-db-type";
 import { ApiRequestDbType } from "./api-request-db-type";
 import mongoose from "mongoose";
+import { LikeDbType, PostLikeDbType } from "../features/likes/types/likeTypes";
 
 
 // const client: MongoClient = new MongoClient(SETTINGS.MONGO_DB.MONGO_URI)
@@ -25,6 +26,8 @@ export let usersCollection: Collection<UserDbType>
 export let commentsCollection: Collection<CommentDbType>
 export let authSessionsCollection: Collection<AuthSessionDbType>
 export let apiRequestsCollection: Collection<ApiRequestDbType>
+export let likesCollection: Collection<LikeDbType>
+export let postLikesCollection: Collection<PostLikeDbType>
 
 export async function runDb(mongoMemoryServer = false) {
     if (mongoMemoryServer) {
@@ -44,6 +47,8 @@ export async function runDb(mongoMemoryServer = false) {
     commentsCollection = db.collection(SETTINGS.MONGO_DB.COMMENT_COLLECTION_NAME)
     authSessionsCollection = db.collection(SETTINGS.MONGO_DB.AUTH_SESSION_COLLECTION_NAME)
     apiRequestsCollection = db.collection(SETTINGS.MONGO_DB.API_REQUESTS_COLLECTION_NAME)
+    likesCollection = db.collection(SETTINGS.MONGO_DB.LIKE_COLLECTION_NAME)
+    postLikesCollection = db.collection(SETTINGS.MONGO_DB.POST_LIKE_COLLECTION_NAME)
 
     try {
 

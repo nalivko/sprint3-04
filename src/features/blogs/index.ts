@@ -1,13 +1,18 @@
+import "reflect-metadata"
 import { Router } from "express";
 // import { BlogController } from "./controllers/BlogController";
-import { blogValidators } from "./middlewares/blogValidators";
+import { authMiddleware } from "../../global-middlewares/authMiddleware";
 import { queryValidator } from "../../global-middlewares/paginateValidator";
 import { postValidators } from "../posts/middlewares/postValidators";
 import { blogIdQueryMiddleware } from "./middlewares/blogIdQueryMiddleware";
-import { authMiddleware } from "../../global-middlewares/authMiddleware";
-import { blogController } from "./composition-root";
+import { blogValidators } from "./middlewares/blogValidators";
+// import { blogController } from "./composition-root";
+import { container } from "./composition-root";
+import { BlogController } from "./controllers/BlogController";
 
 export const blogsRouter = Router({})
+// const blogController = ioc.getInstance<BlogController>(BlogController)
+const blogController = container.resolve(BlogController)
 
 blogsRouter.get('/', ...queryValidator, blogController.getBlogs.bind(blogController))
 blogsRouter.post('/', ...blogValidators, blogController.createBlog.bind(blogController))

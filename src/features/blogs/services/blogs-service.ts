@@ -6,11 +6,13 @@ import { PostDbType, PostInputModel } from "../../posts/types/posts-types";
 import { BlogsRepository } from "../blogs-db-repository";
 import { BlogsQueryRepository } from "../blogs-query-repository";
 import { BlogInputModel, BlogModel, BlogsViewCollectionModel, BlogViewModel } from "../types/blogs-types";
+import { injectable, inject } from "inversify";
 
+@injectable()
 export class BlogsService {
-    constructor(protected blogsQueryRepository: BlogsQueryRepository, protected blogsRepository: BlogsRepository) {
-        // this.blogsQueryRepository = new BlogsQueryRepository()
-        // this.blogsRepository = new BlogsRepository()
+    constructor(
+        @inject(BlogsQueryRepository) protected blogsQueryRepository: BlogsQueryRepository,
+        @inject(BlogsRepository) protected blogsRepository: BlogsRepository) {
     }
 
     async findBlogs(query: { [key: string]: string | undefined }): Promise<BlogsViewCollectionModel> {

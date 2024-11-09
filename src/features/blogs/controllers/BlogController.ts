@@ -2,9 +2,11 @@ import { Request, Response } from "express"
 import { BlogInputModel, BlogViewModel, BlogsViewCollectionModel } from "../types/blogs-types"
 import { PostInputModel, PostViewModel } from "../../posts/types/posts-types"
 import { BlogsService } from "../services/blogs-service"
+import { injectable, inject } from "inversify"
 
+@injectable()
 export class BlogController {
-    constructor(protected blogsService: BlogsService) {}
+    constructor(@inject(BlogsService) protected blogsService: BlogsService) {}
 
     async getBlogs(req: Request, res: Response<BlogsViewCollectionModel>) {
         const allBlogs = await this.blogsService.findBlogs(req.query as { [key: string]: string | undefined })
